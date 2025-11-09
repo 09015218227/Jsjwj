@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>خبر فوری آنلاین</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: "Vazir", sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: linear-gradient(90deg, #e50914, #ff3b3b);
+      padding: 15px 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 0 10px #e50914;
+    }
+    #news {
+      max-width: 600px;
+      margin: 25px auto;
+      text-align: right;
+      line-height: 1.8;
+    }
+    .item {
+      background: #222;
+      border-radius: 10px;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-right: 4px solid #e50914;
+      transition: 0.3s;
+    }
+    .item:hover {
+      background: #1b1b1b;
+      transform: scale(1.02);
+    }
+    .time {
+      color: #aaa;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>📰 خبر فوری آنلاین</header>
+  <div id="news">
+    <p>در حال بارگذاری خبرهای جدید...</p>
+  </div>
+
+  <script>
+    async function loadNews() {
+      const container = document.getElementById("news");
+      container.innerHTML = "<p>در حال دریافت خبرها...</p>";
+
+      try {
+        const res = await fetch("https://api.spaceflightnewsapi.net/v3/articles?_limit=5");
+        const data = await res.json();
+
+        container.innerHTML = "";
+        data.forEach(item => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `
+            <b>${item.title}</b><br>
+            <div class="time">${new Date(item.publishedAt).toLocaleString('fa-IR')}</div>
+            <p>${item.summary.slice(0, 100)}...</p>
+            <a href="${item.url}" target="_blank" style="color:#ff3b3b;">مشاهده خبر</a>
+          `;
+          container.appendChild(div);
+        });
+      } catch (e) {
+        container.innerHTML = "<p>❌ خطا در دریافت خبرها</p>";
+      }
+    }
+
+    loadNews();
+  </script>
+</body>
+</html>
